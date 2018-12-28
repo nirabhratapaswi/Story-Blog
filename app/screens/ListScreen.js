@@ -46,7 +46,6 @@ class StoryList extends Component {
   }
 
   updateStories(stories) {
-    console.log("Updating state of StoryList, ", stories);
     this.setState({
       stories: stories,
       response: true
@@ -56,10 +55,7 @@ class StoryList extends Component {
   render() {
 
     if (this.props.getStories && !this.state.response) {
-      console.log("getStories props found, ......");
       this.props.getStories(this.updateStories);
-    } else {
-      console.log(this.props)
     }
 
     return (
@@ -72,7 +68,7 @@ class StoryList extends Component {
             { this.state.stories.map((story, index) => {
                   return (
                     <ListItem key={index}>
-                      <Left><Text>-></Text></Left>
+                      
                       <Body>
                         <Text style={styles.story_title}>{ story.title.toString() }</Text>
                         <Text note>{ story.authors.toString() }</Text>

@@ -78,14 +78,15 @@ class Stories extends Component {
 
   constructor() {
     super();
-    this.server_url = env.config.server_url.concat(":", env.config.port.toString());
-    console.log(this.server_url, "http://ba35d031.ngrok.io/stories");
-    this.stories = [];
+    this.state = {
+      // server_url: env.config.server_url.concat(":", env.config.port.toString())
+      server_url: env.config.server_url.toString()
+    }
+    this.getStories = this.getStories.bind(this);
   }
 
   getStories(updateStories) {
-    console.log("GetStories called check--------------------------------");
-    fetch('http://ba35d031.ngrok.io/stories', {
+    fetch(this.state.server_url.concat('/stories'), {
       method: 'GET'
     })
       .then(response => response.json())
@@ -93,16 +94,10 @@ class Stories extends Component {
         console.log("Successful request: ", response);
         if (response != null || typeof(response) != Array) {
           stories_arr = [];
-          for (let i=0; i<response.length; i++) {
-            let story = response[i];
+          stories_arr = response.map((story, index) => {
             story.authors = story.authors.toString();
-            stories_arr.push(story);
-          }
-          /*this.stories = response.map((story, index) => {
-            // story.authors = story.authors.toString();
             return story;
-          });*/
-          console.log("Stories", stories_arr);
+          });
           updateStories(stories_arr);
         } else {
           updateStories([]);
