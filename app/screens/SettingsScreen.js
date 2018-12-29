@@ -31,7 +31,7 @@ class Settings extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <NavigationOpenButton title="Settings" />
+        <NavigationOpenButton title="Settings" navigation={this.props.navigation} />
         <View style={styles.pageContent}>
           <Text>Welcome to Settings</Text>
         </View>

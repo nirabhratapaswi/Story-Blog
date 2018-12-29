@@ -20,6 +20,7 @@ import { NavigationOpenButton } from '../navigation/NavigationButtons';
 class Home extends Component {
 
   static navigationOptions = {
+    title: "Home",
     drawerIcon: ({tintColor}) => (
       <Icon name="home" style={{ fontSize: 24, color: tintColor }} />
     )
@@ -28,7 +29,7 @@ class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <NavigationOpenButton title="Home" />
+        <NavigationOpenButton title="Home" navigation={this.props.navigation} />
         <View style={styles.pageContent}>
           <Text>Welcome to Home</Text>
         </View>

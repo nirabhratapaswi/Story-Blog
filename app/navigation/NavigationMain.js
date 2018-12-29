@@ -27,11 +27,12 @@ import {
   Title,
   SubTitle
 } from 'native-base';
-const { width } = Dimensions.get('window')
+const { width } = Dimensions.get('window');
 
-import Home from '../screens/HomeScreen'
-import Settings from '../screens/SettingsScreen'
-import { Stories, StoriesDetail } from '../screens/StoriesScreen'
+import Home from '../screens/HomeScreen';
+import Settings from '../screens/SettingsScreen';
+import { Stories, StoriesDetail } from '../screens/StoriesScreen';
+import { LoginLogout } from '../screens/LoginLogoutScreen';
 
 const CustomDrawerComponent = props => (
   <SafeAreaView style={{ flex: 1 }}>
@@ -56,6 +57,9 @@ const DrawerNavigator = createDrawerNavigator({
   },
   StoriesDetail: {
     screen: StoriesDetail
+  },
+  LoginLogout: {
+    screen: LoginLogout
   }
 }, {
   contentComponent: CustomDrawerComponent,
@@ -63,7 +67,7 @@ const DrawerNavigator = createDrawerNavigator({
   contentOptions: {
     activeTintColor: 'orange'
   },
-  initialRouteName: 'Stories'
+  initialRouteName: 'LoginLogout'
 });
 
 const Navigator = createAppContainer(DrawerNavigator);

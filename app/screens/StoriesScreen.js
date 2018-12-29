@@ -22,57 +22,7 @@ import { NavigationOpenButton } from '../navigation/NavigationButtons';
 import env from '../../env';
 
 import { StoryList } from './ListScreen';
-
-const stories = [{
-  "authors": "Nirabhra Tapaswi",
-  "title": "Origin",
-  "text": "God is dead, AI will rule the future, with a symbiogenesis with humans.",
-}, {
-  "authors": "Nirmalya Tapaswi",
-  "title": "Deception Point",
-  "text": "NASA has proved its worth, proved existance of extraterrestrial life.",
-}, {
-  "authors": "Navamita Tapaswi",
-  "title": "Chamber of Secrets",
-  "text": "Tom Marvolo Riddle: I am Lord Voldemort.",
-}, {
-  "authors": "Nirabhra Tapaswi",
-  "title": "Origin",
-  "text": "God is dead, AI will rule the future, with a symbiogenesis with humans.",
-}, {
-  "authors": "Nirmalya Tapaswi",
-  "title": "Deception Point",
-  "text": "NASA has proved its worth, proved existance of extraterrestrial life.",
-}, {
-  "authors": "Navamita Tapaswi",
-  "title": "Chamber of Secrets",
-  "text": "Tom Marvolo Riddle: I am Lord Voldemort.",
-}, {
-  "authors": "Nirabhra Tapaswi",
-  "title": "Origin",
-  "text": "God is dead, AI will rule the future, with a symbiogenesis with humans.",
-}, {
-  "authors": "Nirmalya Tapaswi",
-  "title": "Deception Point",
-  "text": "NASA has proved its worth, proved existance of extraterrestrial life.",
-}, {
-  "authors": "Navamita Tapaswi",
-  "title": "Chamber of Secrets",
-  "text": "Tom Marvolo Riddle: I am Lord Voldemort.",
-}, {
-  "authors": "Nirabhra Tapaswi",
-  "title": "Origin",
-  "text": "God is dead, AI will rule the future, with a symbiogenesis with humans.",
-}, {
-  "authors": "Nirmalya Tapaswi",
-  "title": "Deception Point",
-  "text": "NASA has proved its worth, proved existance of extraterrestrial life.",
-}, {
-  "authors": "Navamita Tapaswi",
-  "title": "Chamber of Secrets",
-  "text": "Tom Marvolo Riddle: I am Lord Voldemort.",
-}];
-
+import { Auth } from '../services/AuthService';
 
 class Stories extends Component {
 
@@ -83,6 +33,15 @@ class Stories extends Component {
       server_url: env.config.server_url.toString()
     }
     this.getStories = this.getStories.bind(this);
+    this.Auth = new Auth();
+    this.Auth.getLoggedInVariables()
+      .then(resp => {
+        console.log("Logged in variables: ", resp);
+      })
+      .catch(err => {
+        console.error("Error occurred in Stories Screen: ", err);
+      });
+    this.Auth.clearLoggedInVariables();
   }
 
   getStories(updateStories) {
@@ -106,7 +65,7 @@ class Stories extends Component {
       .catch(error => {
         console.log("Request failed:", error);
         updateStories([]);
-      })
+      });
   }
 
   static navigationOptions = {
@@ -118,7 +77,7 @@ class Stories extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <NavigationOpenButton title="Stories" />
+        <NavigationOpenButton title="Stories" navigation={this.props.navigation} />
         <View style={styles.pageContent}>
           <StoryList getStories={this.getStories} />
         </View>
@@ -138,7 +97,7 @@ class StoriesDetail extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <NavigationOpenButton title="Detailed Story" />
+        <NavigationOpenButton title="Detailed Story" navigation={this.props.navigation} />
         <View style={styles.pageContent}>
           <Text>Welcome to Stories Detail</Text>
         </View>

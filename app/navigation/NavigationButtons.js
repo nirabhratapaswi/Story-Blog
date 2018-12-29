@@ -29,7 +29,6 @@ class NavigationOpenButton extends Component {
   }
 
   render() {
-    console.log("NavigationOpenButton called, ", this.props);
     return (
       <Header>
         <Left>
