@@ -20,15 +20,7 @@ import { FormLabel, FormInput, FormValidationMessage, Button } from 'react-nativ
 
 import { NavigationOpenButton, } from '../navigation/NavigationButtons';
 import env from '../../env';
-import { Auth } from '../services/AuthService';
-
-class nullComp extends Component {
-  render() {
-    return (
-      null
-    );
-  }
-}
+import AuthService from '../services/AuthService';
 
 class LoginLogout extends Component {
 
@@ -36,44 +28,30 @@ class LoginLogout extends Component {
     super();
     this.state = {
       username: "admin97",
-      password: "",
+      password: "tardis",
       login_warning: "",
       username_warning: "",
       password_warning: "",
       login_disabled: false,
       server_url: env.config.server_url.toString(),
-      Auth: new Auth(),
     }
     this.loginUser = this.loginUser.bind(this);
     this.logoutUser = this.logoutUser.bind(this);
-    console.log("this.Auth: ", this.state.Auth);
   }
 
-  static navigationOptions = ({ navigation }) => {
-    if (navigation.getParam('checked_logged_in') != 'true' ) {
-      let auth = new Auth();
-      auth.isLoggedIn()
-        .then(logged_in => {
-          console.log("Logged in status recieved: ", logged_in);
-          if (logged_in) {
-            navigation.setParams({'title': 'Logout', 'drawer_label': 'Logout', 'checked_logged_in': 'true'});
-            navigation.navigate('Stories');
-          }
-        })
-        .catch(err => {
-          console.error("Error in LoginScreen navigationOptions: ", err);
-        });
-        return {
-          title: navigation.getParam('title', 'Login'),
-          drawerIcon: ({tintColor}) => (
-            <Icon type='Entypo' name='login' style={{ fontSize: 24, color: tintColor }} />
-          )
-        }
-    } else {
+  static navigationOptions = ({ navigation, screenProps }) => {
+    if (!screenProps.auth.logged_in) {
       return {
         title: navigation.getParam('title', 'Login'),
         drawerIcon: ({tintColor}) => (
           <Icon type='Entypo' name='login' style={{ fontSize: 24, color: tintColor }} />
+        )
+      }
+    } else {
+      return {
+        title: navigation.getParam('title', 'Logout'),
+        drawerIcon: ({tintColor}) => (
+          <Icon type='Entypo' name='log-out' style={{ fontSize: 24, color: tintColor }} />
         )
       }
     }
@@ -102,15 +80,16 @@ class LoginLogout extends Component {
       login_disabled: true
     });
 
-    this.state.Auth.loginUser(this.state.username, this.state.password, (resp) => {
-      if (resp.success) {
+    AuthService.loginUser(this.state.username, this.state.password)
+      .then(resp => {
         this.setState(resp);
-        this.props.navigation.setParams({'title': 'Logout', 'drawer_label': 'Logout'});
-        this.props.navigation.navigate('Stories');
-        return;
-      }
-      this.setState(resp);
-    })
+        if (resp.success) {
+          // this.props.navigation.setParams({'title': 'Logout', 'drawer_label': 'Logout'});
+          this.props.screenProps.updateLoggedInStatus(true);
+          this.props.navigation.navigate('Stories');
+          return;
+        }
+      })
       .catch(err => {
         console.error("Error in loginUser LoginScreen.", err);
       });
@@ -118,13 +97,14 @@ class LoginLogout extends Component {
   }
 
   async logoutUser() {
-    this.state.Auth.clearLoggedInVariables()
-      .then(resp => {
-        console.log("Successful response: ", resp);
+    AuthService.logoutUser(this.props.screenProps.updateLoggedInStatus)
+      .then(success => {
+        console.log("Logout confirm in LoginLogoutScreen: ", success);
         this.props.navigation.setParams({
           'title': 'Login',
           'drawer_label': 'Login'
         });
+        // this.props.screenProps.updateLoggedInStatus(false);
         this.props.navigation.navigate('Home');
       })
       .catch(err => {
@@ -133,16 +113,19 @@ class LoginLogout extends Component {
   }
 
   render() {
-    if (this.props.navigation.getParam('drawer_label') == 'Logout') {
+    if (this.props.screenProps.auth.logged_in) {
       return (
-        <View style={[styles.container, styles.logoutContainer]}>
-          <Button
-            leftIcon={{ type:"entypo", name: 'log-out' }}
-            title="Confirm Logout"
-            backgroundColor='red'
-            onPress={this.logoutUser}
-            disabled={this.state.logout_disabled}
-          />
+        <View style={styles.container}>
+          <NavigationOpenButton title="Logout" />
+          <View style={styles.logoutContainer}>
+            <Button
+              leftIcon={{ type:"entypo", name: 'log-out' }}
+              title="Confirm Logout"
+              backgroundColor='red'
+              onPress={this.logoutUser}
+              disabled={this.state.logout_disabled}
+            />
+          </View>
         </View>
       );
     } else {
@@ -191,6 +174,7 @@ const styles = StyleSheet.create({
     margin: 15,
   },
   logoutContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   }

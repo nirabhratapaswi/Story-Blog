@@ -30,27 +30,29 @@ import {
 const { width } = Dimensions.get('window');
 
 import Home from '../screens/HomeScreen';
-import Settings from '../screens/SettingsScreen';
 import { Stories, StoriesDetail } from '../screens/StoriesScreen';
 import { LoginLogout } from '../screens/LoginLogoutScreen';
+import { Authenticated } from '../screens/authenticated/index';
 
-const CustomDrawerComponent = props => (
-  <SafeAreaView style={{ flex: 1 }}>
-    <View style={styles.image_container}>
-      <Image source={require('../static/images/react_js.png')} style={styles.image} />
-    </View>
-    <ScrollView>
-      <DrawerItems {...props} />
-    </ScrollView>
-  </SafeAreaView>
-)
+const CustomDrawerComponent = (props, other) => {
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.image_container}>
+        <Image source={require('../static/images/react_js.png')} style={styles.image} />
+      </View>
+      <ScrollView>
+        <DrawerItems {...props} />
+      </ScrollView>
+    </SafeAreaView>
+  )
+};
 
 const DrawerNavigator = createDrawerNavigator({
   Home: {
     screen: Home
   },
-  Settings: {
-    screen: Settings
+  Authenticated: {
+    screen: Authenticated
   },
   Stories: {
     screen: Stories
@@ -60,22 +62,27 @@ const DrawerNavigator = createDrawerNavigator({
   },
   LoginLogout: {
     screen: LoginLogout
-  }
+  },
 }, {
   contentComponent: CustomDrawerComponent,
   drawerWidth: width*0.8,
   contentOptions: {
     activeTintColor: 'orange'
   },
-  initialRouteName: 'LoginLogout'
+  initialRouteName: 'Stories'
 });
 
 const Navigator = createAppContainer(DrawerNavigator);
 
 class NavigationMain extends Component {
+
+  constructor() {
+    super();
+  }
+
   render() {
     return (
-      <Navigator />
+      <Navigator screenProps={this.props} />
     );
   }
 }
@@ -105,4 +112,6 @@ const styles = StyleSheet.create({
   }
 });
 
-export default NavigationMain;
+export { 
+  NavigationMain
+};

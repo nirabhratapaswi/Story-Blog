@@ -17,6 +17,11 @@ import {
 } from 'native-base';
 import { NavigationOpenButton } from '../navigation/NavigationButtons';
 
+import {
+  User,
+  Auth,
+} from '../utils/Interfaces';
+
 class Home extends Component {
 
   static navigationOptions = {
