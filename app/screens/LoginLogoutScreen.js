@@ -42,14 +42,14 @@ class LoginLogout extends Component {
   static navigationOptions = ({ navigation, screenProps }) => {
     if (!screenProps.auth.logged_in) {
       return {
-        title: navigation.getParam('title', 'Login'),
+        title: 'Login',
         drawerIcon: ({tintColor}) => (
           <Icon type='Entypo' name='login' style={{ fontSize: 24, color: tintColor }} />
         )
       }
     } else {
       return {
-        title: navigation.getParam('title', 'Logout'),
+        title: 'Logout',
         drawerIcon: ({tintColor}) => (
           <Icon type='Entypo' name='log-out' style={{ fontSize: 24, color: tintColor }} />
         )

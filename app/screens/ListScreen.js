@@ -48,18 +48,43 @@ const ListRenderItem = ({item}) => {
 }
 
 class MyListItem extends React.PureComponent {
+
+  constructor() {
+    super();
+    this.state = {
+      like_icon: {
+        color: 'black',
+      }
+    }
+  }
+
   _onPress = () => {
     console.log("Pressed: ", this.props.id);
     this.props.onPressItem(this.props.id);
+  };
+
+  _onPressLike = () => {
+    console.log("Pressed Like for story id: ", this.props.id);
+    this.setState({
+      like_icon: {
+        color: (this.state.like_icon.color == 'black') ? 'red' : 'black',
+      }
+    })
+    this.props.onPressLikeItem(this.props.id);
   };
 
   render() {
     return (
       <TouchableOpacity onPress={this._onPress} style={styles.item}>
         <View>
-          <Text style={styles.header_text}>{this.props.story.title.toString()}</Text>
-          <Text note>{this.props.story.authors.toString()}</Text>
-          <Text>{this.props.story.text.toString()}</Text>
+          <Left></Left>
+          <Body>
+            <Text style={styles.header_text}>{this.props.story.title.toString()}</Text>
+            <Text note>{this.props.story.authors.toString()}</Text>
+          </Body>
+          <View style={styles.right}>
+            <Icon type="AntDesign" name="like1" onPress={this._onPressLike} style={this.state.like_icon} />
+          </View>
         </View>
       </TouchableOpacity>
     );
@@ -85,6 +110,7 @@ class StoryList extends Component {
       <MyListItem
         id={item._id}
         onPressItem={this._onPressItem}
+        onPressLikeItem={this._onPressLikeItem}
         story={item}
       />
     );
@@ -93,6 +119,10 @@ class StoryList extends Component {
   _onPressItem = (id: string) => {
     // updater functions are preferred for transactional updates
     this.props.onPressItem(id);
+  };
+
+  _onPressLikeItem = (id: string) => {
+    this.props.onPressLikeItem(id);
   };
 
   updateStories(stories) {
@@ -107,15 +137,10 @@ class StoryList extends Component {
   }
 
   render() {
-
-    if (this.props.getStories && !this.state.response) {
-      this.props.getStories(this.updateStories);
-    }
-
     return (
       <Container style={styles.container}>
         <FlatList
-          data={this.state.stories}
+          data={this.props.stories}
           keyExtractor={this._keyExtractor}
           renderItem={this._renderItem}
         />
@@ -159,6 +184,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 2,
     padding: 10,
+  },
+  right: {
+    alignItems: 'flex-end'
   }
 });
 

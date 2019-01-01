@@ -30,7 +30,7 @@ import {
 const { width } = Dimensions.get('window');
 
 import Home from '../screens/HomeScreen';
-import { Stories, StoriesDetail } from '../screens/StoriesScreen';
+import { Stories } from '../screens/StoriesScreen';
 import { LoginLogout } from '../screens/LoginLogoutScreen';
 import { Authenticated } from '../screens/authenticated/index';
 
@@ -56,9 +56,6 @@ const DrawerNavigator = createDrawerNavigator({
   },
   Stories: {
     screen: Stories
-  },
-  StoriesDetail: {
-    screen: StoriesDetail
   },
   LoginLogout: {
     screen: LoginLogout

@@ -7,7 +7,9 @@ import {
   Platform,
   StyleSheet,
   Text,
-  View
+  View,
+  ScrollView,
+  BackHandler,
 } from 'react-native';
 import {
   Header,
@@ -38,9 +40,11 @@ class StoriesDetail extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.pageContent}>
-          <Text>{this.props.story.text}</Text>
-        </View>
+          <ScrollView contentContainerStyle={styles.contentContainer}>
+            <Text style={styles.story_title}>{this.props.story.title.toString()}</Text>
+            <Text note style={styles.story_authors}> - {this.props.story.authors.toString()}</Text>
+            <Text style={styles.story_text}>{this.props.story.text.toString()}</Text>
+          </ScrollView>
       </View>
     );
   }
@@ -58,13 +62,45 @@ class Stories extends Component {
     super();
     this.state = {
       story: null,
-      single_story_mode: false
+      single_story_mode: false,
+      stories: []
     };
     this.getStory = this.getStory.bind(this);
+    this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
+    StoriesService.getStories()
+      .then(stories => {
+        this.setState({
+          stories: stories,
+        })
+      })
+      .catch(err => {
+        console.error("Error in StoriesScreen constructor: ", err)
+      });
+  }
+
+  componentWillMount() {
+    console.log("Stories mounted!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackButtonClick);
+  }
+
+  componentWillUnmount() {
+    console.log("Stories unmounted!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      BackHandler.removeEventListener('hardwareBackPress', this.handleBackButtonClick);
+  }
+
+  handleBackButtonClick() {
+      // this.props.navigation.goBack(null);
+      console.log("Back button pressed!!");
+      if (!this.state.single_story_mode) {
+        return this.props.navigation.navigate('Home');
+      }
+      this.setState({
+        single_story_mode: false,
+      });
+      return true;
   }
 
   getStory(story_id) {
-    console.log("Story id to fetch: ", story_id);
     StoriesService.getStory(story_id)
       .then(story => {
         console.log("Story recieved by StoriesScreen: ", story);
@@ -78,6 +114,10 @@ class Stories extends Component {
       });
   }
 
+  onPressLikeItem(story_id) {
+    console.log("Like pressed for: ", story_id);
+  }
+
   render() {
 
     console.log("Props recieved by StoriesScreen: ", this.props);
@@ -86,9 +126,7 @@ class Stories extends Component {
       return (
         <View style={styles.container}>
           <NavigationOpenButton title="Story" navigation={this.props.navigation} />
-          <View style={styles.pageContent}>
-            <StoriesDetail story={this.state.story} />
-          </View>
+          <StoriesDetail story={this.state.story} />
         </View>
       );
     } else {
@@ -96,7 +134,7 @@ class Stories extends Component {
         <View style={styles.container}>
           <NavigationOpenButton title="Stories" navigation={this.props.navigation} />
           <View style={styles.pageContent}>
-            <StoryList onPressItem={this.getStory} getStories={StoriesService.getStories} getStory={this.getStory} />
+            <StoryList onPressLikeItem={this.onPressLikeItem} onPressItem={this.getStory} stories={this.state.stories} getStories={StoriesService.getStories} getStory={this.getStory} />
           </View>
         </View>
       );
@@ -110,8 +148,32 @@ const styles = StyleSheet.create({
   },
   pageContent: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    backgroundColor: '#F5FCFF',
+  },
+  story_title: {
+    fontSize: 40,
+    fontWeight: '900',
+  },
+  story_authors: {
+    fontSize: 14,
+    fontWeight: '200',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+  },
+  story_text: {
+    paddingTop: 15,
+    fontSize: 18,
+    fontWeight: '500',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+  contentContainer: {
+    flexGrow: 1,
+    padding: 10,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
     backgroundColor: '#F5FCFF',
   }
 });

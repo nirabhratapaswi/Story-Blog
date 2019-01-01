@@ -33,7 +33,7 @@ class StoriesService {
 			});
 	}
 
-	static async getStories(updateStories) {
+	static async getStories() {
 		return fetch(SERVER_URL.concat('/stories'), {
 				method: 'GET'
 			})
@@ -46,14 +46,14 @@ class StoriesService {
 						story.authors = story.authors.toString();
 						return story;
 					});
-					updateStories(stories_arr);
+					return stories_arr;
 				} else {
-					updateStories([]);
+					return [];
 				}
 			})
 			.catch(error => {
 				console.log("Request failed:", error);
-				updateStories([]);
+				return [];
 			});
   }
 }
