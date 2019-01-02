@@ -54,6 +54,7 @@ class Main extends Component {
 	}
 
 	render() {
+		console.log("Re rendering Main.js");
 		return (
 			<NavigationMain auth={Auth.getAuth()} updateLoggedInStatus={this.updateLoggedInStatus} />
 		);

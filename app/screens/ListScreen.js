@@ -26,6 +26,8 @@ import {
   ListItem,
 } from 'native-base';
 
+import AuthService from '../services/AuthService';
+
 const { width } = Dimensions.get('window');
 
 function getWidth(width, percentage) {
@@ -36,17 +38,6 @@ function getWidth(width, percentage) {
   }
 }
 
-const ListRenderItem = ({item}) => {
-  console.log("Rendering: ", item);
-  return (
-    <View>
-      <Text style={styles.story_title}>{item.story_title.toString()}</Text>
-      <Text note>{item.authors.toString()}</Text>
-      <Text>{item.text.toString()}</Text>
-    </View>
-  );
-}
-
 class MyListItem extends React.PureComponent {
 
   constructor() {
@@ -54,7 +45,7 @@ class MyListItem extends React.PureComponent {
     this.state = {
       like_icon: {
         color: 'black',
-      }
+      },
     }
   }
 
@@ -74,20 +65,34 @@ class MyListItem extends React.PureComponent {
   };
 
   render() {
-    return (
-      <TouchableOpacity onPress={this._onPress} style={styles.item}>
-        <View>
-          <Left></Left>
-          <Body>
-            <Text style={styles.header_text}>{this.props.story.title.toString()}</Text>
-            <Text note>{this.props.story.authors.toString()}</Text>
-          </Body>
-          <View style={styles.right}>
-            <Icon type="AntDesign" name="like1" onPress={this._onPressLike} style={this.state.like_icon} />
+    if (this.props.screenProps.auth.logged_in) {
+      return (
+        <TouchableOpacity onPress={this._onPress} style={styles.item}>
+          <View>
+            <Left></Left>
+            <Body>
+              <Text style={styles.header_text}>{this.props.story.title.toString()}</Text>
+              <Text note> - {this.props.story.authors.toString()}</Text>
+            </Body>
+            <View style={styles.right}>
+              <Icon type="AntDesign" name="like1" onPress={this._onPressLike} style={this.state.like_icon} />
+            </View>
           </View>
-        </View>
-      </TouchableOpacity>
-    );
+        </TouchableOpacity>
+      );
+    } else {
+      return (
+        <TouchableOpacity onPress={this._onPress} style={styles.item}>
+          <View>
+            <Left></Left>
+            <Body>
+              <Text style={styles.header_text}>{this.props.story.title.toString()}</Text>
+              <Text note> - {this.props.story.authors.toString()}</Text>
+            </Body>
+          </View>
+        </TouchableOpacity>
+      );
+    }
   }
 }
 
@@ -112,6 +117,7 @@ class StoryList extends Component {
         onPressItem={this._onPressItem}
         onPressLikeItem={this._onPressLikeItem}
         story={item}
+        screenProps={this.props.screenProps}
       />
     );
   }
@@ -143,6 +149,9 @@ class StoryList extends Component {
           data={this.props.stories}
           keyExtractor={this._keyExtractor}
           renderItem={this._renderItem}
+          extraData={{
+            screenProps: this.props.screenProps
+          }}
         />
       </Container>
     );

@@ -27,8 +27,8 @@ class LoginLogout extends Component {
   constructor() {
     super();
     this.state = {
-      username: "admin97",
-      password: "tardis",
+      username: "admin",
+      password: "alok@18",
       login_warning: "",
       username_warning: "",
       password_warning: "",

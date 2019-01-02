@@ -116,6 +116,18 @@ class Stories extends Component {
 
   onPressLikeItem(story_id) {
     console.log("Like pressed for: ", story_id);
+    StoriesService.likeStory(story_id)
+      .then(resp => {
+        console.log("Resp from likeStory: ", resp);
+        if (!resp) {
+          console.log("Like unsuccessful");
+          return;
+        }
+        console.log("Like  successful");
+      })
+      .catch(err => {
+        console.error("Error in StoriesScreen onPressLikeItem: ", err)
+      })
   }
 
   render() {
@@ -134,7 +146,7 @@ class Stories extends Component {
         <View style={styles.container}>
           <NavigationOpenButton title="Stories" navigation={this.props.navigation} />
           <View style={styles.pageContent}>
-            <StoryList onPressLikeItem={this.onPressLikeItem} onPressItem={this.getStory} stories={this.state.stories} getStories={StoriesService.getStories} getStory={this.getStory} />
+            <StoryList screenProps={this.props.screenProps} onPressLikeItem={this.onPressLikeItem} onPressItem={this.getStory} stories={this.state.stories} getStories={StoriesService.getStories} getStory={this.getStory} />
           </View>
         </View>
       );
@@ -164,7 +176,7 @@ const styles = StyleSheet.create({
   },
   story_text: {
     paddingTop: 15,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '500',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',

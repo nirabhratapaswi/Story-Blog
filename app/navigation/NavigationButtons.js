@@ -29,7 +29,6 @@ class NavigationOpenButton extends Component {
   }
 
   render() {
-    console.log("Open drawer button props: ", this.props);
     return (
       <Header>
         <Left>
